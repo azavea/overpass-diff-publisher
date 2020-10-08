@@ -19,7 +19,7 @@ const gzip = promisify(zlib.gzip);
 
 const {
   parsers: { AugmentedDiffParser },
-  sources: { AugmentedDiffs }
+  sources: { AugmentedDiffs, Onramp }
 } = require("osm-replication-streams");
 
 process.on("unhandledRejection", err => {
@@ -37,7 +37,8 @@ const optionDefinitions = [
   },
   { name: "timestamp", alias: "t", type: String },
   { name: "help", alias: "h", type: Boolean },
-  { name: "target", defaultOption: true }
+  { name: "target", defaultOption: true },
+  { name: "source", alias: "s", type: String, default: "overpass" }
 ];
 
 const options = commandLineArgs(optionDefinitions, { camelCase: true });
@@ -183,13 +184,15 @@ async function main() {
     }
   };
 
+  const Source = options.source === "onramp" ? Onramp : AugmentedDiffs;
+  const baseURL = options.source === "onramp" ? process.env.ONRAMP_URL : process.env.OVERPASS_URL;
   const processor = new AugmentedDiffParser().on("error", console.warn);
   const extractor = new ExtractionStream();
 
   return new Promise((resolve, reject) => {
     _(
-      AugmentedDiffs({
-        baseURL: process.env.OVERPASS_URL,
+      Source({
+        baseURL,
         infinite: true,
         initialSequence
       })

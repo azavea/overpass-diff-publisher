@@ -16,7 +16,7 @@
     "epipebomb": "^1.0.0",
     "fs-extra": "^8.0.1",
     "highland": "^2.13.4",
-    "osm-replication-streams": "azavea/osm-replication-streams#8996825887a57f64f3e3fdae94942b1b23df380e",
+    "osm-replication-streams": "github:azavea/osm-replication-streams#c70a118b603f41dd583ffe9238178a2d91247a7a",
     "yaml": "^1.6.0"
   }
 }
